@@ -4,6 +4,8 @@ import com.nowcoder.wenda.model.Question;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -28,4 +30,7 @@ public interface QuestionDao {
             @Param("userId") int id,
             @Param("offset") int offset,
             @Param("limit") int limit);
+
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where id = #{id}"})
+    Question getById(int id);
 }

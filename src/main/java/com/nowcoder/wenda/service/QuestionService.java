@@ -23,9 +23,9 @@ public class QuestionService {
     @Autowired
     SensitiveService sensitiveService;
 
-    // public Question getById(int id) {
-    //     return questionDao.getById(id);
-    // }
+    public Question getById(int id) {
+        return questionDao.getById(id);
+    }
 
     // 新增问题
     public int addQuestion(Question question) {
