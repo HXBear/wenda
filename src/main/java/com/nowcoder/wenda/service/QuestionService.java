@@ -20,6 +20,9 @@ public class QuestionService {
     @Autowired
     QuestionDao questionDao;
 
+    @Autowired
+    SensitiveService sensitiveService;
+
     // public Question getById(int id) {
     //     return questionDao.getById(id);
     // }
@@ -30,7 +33,8 @@ public class QuestionService {
         question.setContent(HtmlUtils.htmlEscape(question.getContent()));
 
         // 敏感词过滤
-
+        question.setTitle(sensitiveService.filter(question.getTitle()));
+        question.setContent(sensitiveService.filter(question.getContent()));
 
         return questionDao.addQuestion(question) > 0 ? question.getId() : 0;
     }
