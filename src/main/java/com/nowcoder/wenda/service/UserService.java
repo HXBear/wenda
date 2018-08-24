@@ -120,5 +120,7 @@ public class UserService {
         loginTicketDao.updateStatus(ticket, 1); // 修改数据库状态码 status
     }
 
-
+    public User selectByName(String name) {
+        return userDao.selectByName(name);
+    }
 }
