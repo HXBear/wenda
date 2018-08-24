@@ -1,10 +1,7 @@
 package com.nowcoder.wenda.dao;
 
 import com.nowcoder.wenda.model.Question;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,4 +30,7 @@ public interface QuestionDao {
 
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where id = #{id}"})
     Question getById(int id);
+
+    @Update({"update ", TABLE_NAME, " set comment_count = #{count} where id = #{entityId}"})
+    int updateComment(@Param("entityId") int entityId, @Param("count") int count);
 }
