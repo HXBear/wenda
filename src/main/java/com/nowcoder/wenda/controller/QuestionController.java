@@ -1,19 +1,23 @@
 package com.nowcoder.wenda.controller;
 
-import com.nowcoder.wenda.model.HostHolder;
-import com.nowcoder.wenda.model.Question;
-import com.nowcoder.wenda.model.ViewObject;
+import com.nowcoder.wenda.model.*;
+import com.nowcoder.wenda.service.CommentService;
 import com.nowcoder.wenda.service.QuestionService;
 import com.nowcoder.wenda.service.UserService;
 import com.nowcoder.wenda.util.WendaUtil;
+import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
+import org.apache.commons.digester.annotations.FromAnnotationRuleProviderFactory;
+import org.hibernate.validator.internal.metadata.aggregated.rule.VoidMethodsMustNotBeReturnValueConstrained;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.stream.events.Comment;
+import java.awt.color.CMMException;
+import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +40,9 @@ public class QuestionController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    CommentService commentService;
 
     // 添加问题的方法
     @RequestMapping(value = "/question/add", method = {RequestMethod.POST})
@@ -69,6 +76,18 @@ public class QuestionController {
         Question question = questionService.getById(qid);
         model.addAttribute("question", question);
         model.addAttribute("user", userService.getUser(question.getUserId()));
+
+        // 数据库中的各种评论的数据
+        List<Comment> commentList = commentService.getCommentsByEntity(qid, EntityType.ENTITY_QUESTION);
+        List<ViewObject> vos = new ArrayList<>();
+
+        for (Comment comment : commentList) {
+            ViewObject vo = new ViewObject();
+            vo.set("comment", comment);
+            vo.set("user", userService.getUser(comment.getUserId()));
+            vos.add(vo);
+        }
+        model.addAttribute("comments", vos);
 
         return "detail";
     }
