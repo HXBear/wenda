@@ -47,9 +47,4 @@ public class QuestionService {
     public int updateComment(int entityId, int count) {
         return questionDao.updateComment(entityId, count);
     }
-
-    // // 修改问题
-    // public int updateCommentCount(int id, int count) {
-    //     return questionDao.updateComment(id, count);
-    // }
 }

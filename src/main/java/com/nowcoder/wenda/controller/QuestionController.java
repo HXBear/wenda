@@ -2,6 +2,7 @@ package com.nowcoder.wenda.controller;
 
 import com.nowcoder.wenda.model.*;
 import com.nowcoder.wenda.service.CommentService;
+import com.nowcoder.wenda.service.LikeService;
 import com.nowcoder.wenda.service.QuestionService;
 import com.nowcoder.wenda.service.UserService;
 import com.nowcoder.wenda.util.WendaUtil;
@@ -44,6 +45,9 @@ public class QuestionController {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    LikeService likeService;
+
     // 添加问题的方法
     @RequestMapping(value = "/question/add", method = {RequestMethod.POST})
     @ResponseBody
@@ -84,7 +88,17 @@ public class QuestionController {
         for (Comment comment : commentList) {
             ViewObject vo = new ViewObject();
             vo.set("comment", comment);
+
+            if (hostHolder.getUser() == null) {
+                vo.set("liked", 0);
+            } else {
+                // 注意设置进Redis中的liked的entityType是对评论的赞和踩，所以设置为 ENTITY_COMMENT
+                vo.set("liked", likeService.getLikeStatus(hostHolder.getUser().getId(), EntityType.ENTITY_COMMENT, comment.getId()));
+            }
+            vo.set("likeCount", likeService.getLikeCount(EntityType.ENTITY_COMMENT, comment.getId()));
+
             vo.set("user", userService.getUser(comment.getUserId()));
+
             vos.add(vo);
         }
         model.addAttribute("comments", vos);
